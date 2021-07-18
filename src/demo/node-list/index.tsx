@@ -23,8 +23,7 @@ export default function NodeListDemo(): ReactElement {
                 <NodeList direction="vertical">
                     {renderButton()}
                 </NodeList>
-                </div>
-               
+                </div> 
             </section>
             <section className='demo-node-list-section'>
                 <h5>Card list</h5>
