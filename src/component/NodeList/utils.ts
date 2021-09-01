@@ -1,8 +1,14 @@
 import * as React from 'react';
 
-function parseTabList(children) {
+export interface Node extends React.ReactElement {
+  node: React.ReactElement;
+}
+
+export type Nodes = Node[];
+
+function parseNodeList(children: React.ReactNode[]): Nodes {
   return children
-    .map((node,index) => {
+    ?.map((node, index) => {
       if (React.isValidElement(node)) {
         const key = node.key !== undefined ? String(node.key) : index;
         return {
@@ -15,7 +21,7 @@ function parseTabList(children) {
     })
     .filter((node) => node);
 }
-function alignInRange(value, transformMin, transformMax) {
+function alignInRange(value: number, transformMin: number, transformMax: number): number {
   if (value < transformMin) {
     return transformMin;
   }
@@ -24,4 +30,4 @@ function alignInRange(value, transformMin, transformMax) {
   }
   return value;
 }
-export { parseTabList, alignInRange };
+export { parseNodeList, alignInRange };

@@ -1,0 +1,6 @@
+src
+example
+webpack.config.js
+package-lock.json
+*.js.map
+lib/example

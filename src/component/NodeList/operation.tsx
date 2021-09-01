@@ -1,6 +1,17 @@
 import React from 'react';
 
-export default React.forwardRef(function operation(props, ref) {
+export interface Props {
+  prefixCs: string;
+  horizonal: boolean;
+  operationHidden: boolean;
+  onOperate: (value: string) => void;
+  disabled: [boolean, boolean];
+}
+
+export default React.forwardRef(function operation(
+  props: Props,
+  ref: React.MutableRefObject<HTMLDivElement>
+) {
   const { prefixCs, horizonal, operationHidden, onOperate, disabled } = props;
   const operationsHiddenClassName = operationHidden ? `${prefixCs}-operation-hidden` : '';
   const disabledClass = [
@@ -26,10 +37,10 @@ export default React.forwardRef(function operation(props, ref) {
   }
   return (
     <>
-      <div ref={ref} className={optionLeftClass} onClick={onLeftClick} disabled >
+      <div ref={ref} className={optionLeftClass} onClick={onLeftClick}>
         <span className={`${prefixCs}-operation-arrow`}></span>
       </div>
-      <div ref={ref} className={optionRightClass} onClick={onRightClick} disabled >
+      <div ref={ref} className={optionRightClass} onClick={onRightClick}>
         <span className={`${prefixCs}-operation-arrow`}></span>
       </div>
     </>
