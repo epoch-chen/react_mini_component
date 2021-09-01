@@ -1,11 +1,16 @@
 import { useMemo } from 'react';
-
+import { Nodes } from '../utils';
+import { NodeOffsetMap } from './useOffsets';
 const DEFAULT_SIZE = { width: 0, height: 0, left: 0, top: 0, right: 0 };
 
-export default function useVisibleRange(tabOffsets, containerSize, { nodes, horizonal }) {
-  let unit;
-  let position;
-  let transformSize;
+export default function useVisibleRange(
+  tabOffsets: NodeOffsetMap,
+  containerSize: { width: number; height: number; left: number; top: number },
+  { nodes, horizonal }: { nodes: Nodes; horizonal: boolean }
+): [number, number] {
+  let unit: 'width' | 'height';
+  let position: 'left' | 'top';
+  let transformSize: number;
 
   if (horizonal) {
     unit = 'width';

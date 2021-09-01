@@ -6,7 +6,7 @@ type WheelEventHandler = (e: WheelEvent) => void;
 // ================================= Hook =================================
 export default function useTouchMove(
   ref: React.RefObject<HTMLDivElement>,
-  onOffset: (offsetX: number, offsetY: number) => boolean,
+  onOffset: (offsetX: number, offsetY: number) => boolean
 ) {
   // ========================= Events =========================
 
@@ -17,7 +17,7 @@ export default function useTouchMove(
     const { deltaX, deltaY } = e;
 
     // Convert both to x & y since wheel only happened on PC
-    let mixed: number = 0;
+    let mixed = 0;
     const absX = Math.abs(deltaX);
     const absY = Math.abs(deltaY);
     if (absX === absY) {
@@ -39,12 +39,11 @@ export default function useTouchMove(
   const touchEventsRef = useRef<{
     onWheel: WheelEventHandler;
   }>(null);
-  // @ts-ignore
+
   touchEventsRef.current = { onWheel };
 
   React.useEffect(() => {
     function onProxyWheel(e: WheelEvent) {
-
       touchEventsRef.current?.onWheel(e);
     }
 

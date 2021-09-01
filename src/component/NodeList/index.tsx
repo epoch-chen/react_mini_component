@@ -2,35 +2,45 @@ import React, { useEffect, useRef, useState } from 'react';
 import ReactResizeObserver from 'rc-resize-observer';
 import Operation from './operation';
 import RenderNode from './renderNode';
-import { parseTabList, alignInRange } from './utils';
+import { parseNodeList, alignInRange } from './utils';
 import useRefs from './hook/useRefs';
 import useOffsets from './hook/useOffsets';
 import useVisibleRange from './hook/useVisibleRange';
 import useTouchMove from './hook/useTouchMove';
 import './asset/index.less';
 
-function NodeList(props) {
+export interface Props {
+  direction: 'vertical' | 'horizonal';
+  children: React.ReactElement[];
+}
+
+export type NodeSizeMap = Map<
+  React.Key,
+  { width: number; height: number; left: number; top: number }
+>;
+
+const NodeList: React.FC<Props> = (props: Props) => {
   const { children, direction } = props;
-  const nodesWrapperRef = useRef();
-  const nodeListRef = useRef();
-  const operationsRef = useRef();
-  const [getNodeRef] = useRefs();
+  const nodesWrapperRef = useRef<HTMLDivElement>();
+  const nodeListRef = useRef<HTMLDivElement>();
+  const operationsRef = useRef<HTMLDivElement>();
+  const [getNodeRef] = useRefs<HTMLDivElement>();
 
-  const [wrapperScrollWidth, setWrapperScrollWidth] = useState(0);
-  const [wrapperScrollHeight, setWrapperScrollHeight] = useState(0);
-  const [wrapperWidth, setWrapperWidth] = useState(null);
-  const [wrapperHeight, setWrapperHeight] = useState(null);
-  const [nodesSizes, setNodesSizes] = useState(new Map());
+  const [wrapperScrollWidth, setWrapperScrollWidth] = useState<number>(0);
+  const [wrapperScrollHeight, setWrapperScrollHeight] = useState<number>(0);
+  const [wrapperWidth, setWrapperWidth] = useState<number>(null);
+  const [wrapperHeight, setWrapperHeight] = useState<number>(null);
+  const [nodesSizes, setNodesSizes] = useState<NodeSizeMap>(new Map());
 
-  const [transformLeft, setTransformLeft] = useState(0);
-  const [transformTop, setTransformTop] = useState(0);
-  const [activeKey, setActiveKey] = useState('');
+  const [transformLeft, setTransformLeft] = useState<number>(0);
+  const [transformTop, setTransformTop] = useState<number>(0);
+  const [activeKey, setActiveKey] = useState<React.Key>('');
   const horizonal = direction !== 'vertical';
-  const nodes = parseTabList(children);
+  const nodes = parseNodeList(children);
   const prefixCs = 'node-list';
   const operationsHiddenClassName = `${prefixCs}-operation-hidden`;
 
-  function getRefBykey(key) {
+  function getRefBykey(key: React.Key) {
     return getNodeRef(key);
   }
   const resizeHandler = () => {
@@ -78,7 +88,7 @@ function NodeList(props) {
 
   const nodesOffset = useOffsets(nodes, nodesSizes, wrapperScrollWidth);
 
-  function onNodeScroll(key = activeKey, toTopOrLeft) {
+  function onNodeScroll(key = activeKey, toTopOrLeft?: boolean) {
     const nodeOffset = nodesOffset.get(key) || {
       width: 0,
       height: 0,
@@ -124,7 +134,7 @@ function NodeList(props) {
       left: transformLeft,
       top: transformTop,
     },
-    { horizonal, nodes },
+    { horizonal, nodes }
   );
   const startHiddenNodes = nodes.slice(0, visibleStart);
   const endHiddenNodes = nodes.slice(visibleEnd + 1);
@@ -137,8 +147,8 @@ function NodeList(props) {
     resizeHandler();
   }, [activeKey, nodes.map((tab) => tab.key).join('_')]);
 
-  const onOperate = (dir) => {
-    let scrollTokey = '';
+  const onOperate = (dir: string) => {
+    let scrollTokey: React.Key = '';
     const util = horizonal ? 'left' : 'top';
     const safeSize = nodesSizes.get(nodes[visibleStart]?.key) || {
       width: 0,
@@ -164,7 +174,7 @@ function NodeList(props) {
   };
 
   useTouchMove(nodesWrapperRef, (offsetX, offsetY) => {
-    function doMove(setState, offset) {
+    function doMove(setState: React.Dispatch<React.SetStateAction<number>>, offset: number) {
       setState((value) => {
         const newValue = alignInRange(value + offset, transformMin, transformMax);
 
@@ -191,17 +201,17 @@ function NodeList(props) {
 
     return true;
   });
-  function onActiveKeyChange(key) {
+  function onActiveKeyChange(key: React.Key) {
     setActiveKey(key);
     onNodeScroll(key);
   }
   const operationBaseOption = {
     ref: operationsRef,
     prefixCs: prefixCs,
-    operationHidden: !hiddenNodes.length > 0,
+    operationHidden: !(hiddenNodes.length > 0),
     onOperate: onOperate,
     horizonal: horizonal,
-    disabled: [startHiddenNodes.length <= 0, endHiddenNodes.length <= 0],
+    disabled: [startHiddenNodes.length <= 0, endHiddenNodes.length <= 0] as [boolean, boolean],
   };
 
   return (
@@ -209,13 +219,17 @@ function NodeList(props) {
       <div
         ref={nodesWrapperRef}
         className={
-          hiddenNodes.length > 0 ? `${prefixCs} ${horizonal?`${prefixCs}-with-hidden-node`:`${prefixCs}-with-hidden-node-vertical`}` : `${prefixCs}`
+          hiddenNodes.length > 0
+            ? `${prefixCs} ${
+                horizonal ? `${prefixCs}-with-hidden-node` : `${prefixCs}-with-hidden-node-vertical`
+              }`
+            : `${prefixCs}`
         }
       >
         <Operation {...operationBaseOption} />
         <div
           ref={nodeListRef}
-          className={`${prefixCs}-content ${horizonal?``:`${prefixCs}-content-vertical`}`}
+          className={`${prefixCs}-content ${horizonal ? `` : `${prefixCs}-content-vertical`}`}
           style={{
             transform: `translate(${transformLeft}px, ${transformTop}px)`,
           }}
@@ -230,5 +244,5 @@ function NodeList(props) {
       </div>
     </ReactResizeObserver>
   );
-}
-export { NodeList };
+};
+export default NodeList;
