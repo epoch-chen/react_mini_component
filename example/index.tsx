@@ -3,7 +3,8 @@ import { BrowserRouter as Router, Route, Link } from 'react-router-dom';
 import { ErrorBoundary } from 'react-error-boundary';
 import ReactDOM from 'react-dom';
 import NodeListDemo from './node-list';
-
+import DialogDemo from './dialog';
+// import ScrollView from './../src/component/test/scrollView';
 function App() {
   return (
     <div className="App">
@@ -13,11 +14,16 @@ function App() {
             <li>
               <Link to="/list">List</Link>
             </li>
+            <li>
+              <Link to="/dialog">Dialog</Link>
+            </li>
           </ul>
           <hr />
           <Route path="/list" component={NodeListDemo} />
+          <Route path="/dialog" component={DialogDemo} />
         </div>
       </Router>
+      <DialogDemo></DialogDemo>
     </div>
   );
 }

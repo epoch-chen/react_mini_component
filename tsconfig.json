@@ -2,7 +2,7 @@
   "compilerOptions": {
     "jsx": "react",
     "baseUrl": ".",
-    "outDir": "./lib/",
+    "outDir": "lib",
     "sourceMap": false,
     "noImplicitAny": true,
     "esModuleInterop": true,
@@ -14,5 +14,5 @@
     "allowSyntheticDefaultImports": true,
     "declaration": true
   },
-  "include": ["./src/**/*", "example/demo", "example/node-list"]
+  "include": ["./src/**/*"]
 }
