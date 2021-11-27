@@ -1,5 +1,6 @@
 /* eslint-disable no-undef */
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const path = require('path');
 module.exports = {
   mode: 'development',
@@ -31,6 +32,24 @@ module.exports = {
       },
     ],
   },
+  externals: {
+    react: 'React',
+    'react-dom': 'ReactDOM',
+    'react-router-dom': 'ReactRouterDOM',
+  },
+  optimization: {
+    splitChunks: {
+      cacheGroups: {
+        vendors: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          chunks: 'all',
+          enforce: true,
+          priority: -3,
+        },
+      },
+    },
+  },
   devServer: {
     static: {
       directory: path.join(__dirname, '../dist'),
@@ -39,11 +58,14 @@ module.exports = {
     port: 3001,
     https: false,
     open: true,
+    hot: true,
+    historyApiFallback: true,
   },
   plugins: [
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, 'public/index.html'),
     }),
+    new BundleAnalyzerPlugin(),
   ],
   watch: true,
 };
