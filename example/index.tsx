@@ -4,6 +4,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import ReactDOM from 'react-dom';
 import NodeListDemo from './node-list';
 import DialogDemo from './dialog';
+import DndDemo from './dnd';
 // import ScrollView from './../src/component/test/scrollView';
 function App() {
   return (
@@ -17,10 +18,14 @@ function App() {
             <li>
               <Link to="/dialog">Dialog</Link>
             </li>
+            <li>
+              <Link to="/dnd">Drag and Drop</Link>
+            </li>
           </ul>
           <hr />
           <Route path="/list" component={NodeListDemo} />
           <Route path="/dialog" component={DialogDemo} />
+          <Route path="/dnd" component={DndDemo} />
         </div>
       </Router>
       <DialogDemo></DialogDemo>
