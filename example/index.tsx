@@ -5,7 +5,6 @@ import ReactDOM from 'react-dom';
 import NodeListDemo from './node-list';
 import DialogDemo from './dialog';
 import DndDemo from './dnd';
-
 // import ScrollView from './../src/component/test/scrollView';
 function App() {
   return (
@@ -29,6 +28,7 @@ function App() {
           <Route path="/dnd" component={DndDemo} />
         </div>
       </Router>
+      <DialogDemo></DialogDemo>
     </div>
   );
 }
