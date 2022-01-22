@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import ReactResizeObserver from 'rc-resize-observer';
 import Operation from './operation';
-import RenderNode from './renderNode';
+import RenderNode from './render-node';
 import { parseNodeList, alignInRange } from './utils';
 import useRefs from './hook/useRefs';
 import useOffsets from './hook/useOffsets';

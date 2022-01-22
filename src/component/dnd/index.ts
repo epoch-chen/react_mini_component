@@ -1,3 +1,3 @@
-export { default as DndManager } from './dndManager';
-export { default as DndComponent } from './dndComponet';
+export { default as DndManager } from './dnd-manager';
+export { default as DndComponent } from './dnd-component';
 export * from './type';

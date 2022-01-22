@@ -28,7 +28,6 @@ function App() {
           <Route path="/dnd" component={DndDemo} />
         </div>
       </Router>
-      <DialogDemo></DialogDemo>
     </div>
   );
 }
