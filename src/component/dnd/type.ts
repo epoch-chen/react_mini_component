@@ -7,8 +7,8 @@ export enum DragResultStatusEnum {
 export type sourceId = string | null;
 export type targetId = string | null;
 export type dropMode = DataTransfer['dropEffect'];
-export type source = any;
-export type target = any;
+export type source = Record<string, string | number>;
+export type target = Record<string, string | number>;
 
 export type sourceMap = Record<string, source>;
 export type targetMap = Record<string, target>;
@@ -20,6 +20,11 @@ export interface IResult {
   hoverId: targetId;
 }
 
+export interface IDropEndResult {
+  source: source;
+  target: target;
+  status: DragResultStatusEnum;
+}
 export interface IDndManager {
   dropMode: dropMode;
   sourceMap: sourceMap;

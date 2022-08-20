@@ -1,13 +1,13 @@
-import React, { cloneElement } from 'react';
+import React, { cloneElement, HTMLAttributes } from 'react';
 import { DragResultStatusEnum, IDndManager, sourceId } from './type';
 export function draggableConnect(
   element: React.ReactElement,
+  draggable: boolean,
   sourceId: sourceId,
   dndManager: IDndManager
 ): React.ReactElement {
   const dragStartHandler = (e: React.DragEvent<HTMLDivElement>) => {
     if (dndManager.dropMode) e.dataTransfer.dropEffect = dndManager.dropMode;
-    console.log(e.dataTransfer, 'start');
     dndManager?.changeResult({
       status: DragResultStatusEnum.DRAG,
       sourceId: sourceId,
@@ -17,19 +17,14 @@ export function draggableConnect(
   };
   const dragEndHandler = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
-    console.log(e.dataTransfer, 'end');
-    if (dndManager.result.sourceId && dndManager.result.targetId) {
-      dndManager?.changeResult({
-        status: DragResultStatusEnum.DROP,
-        hoverId: null,
-      });
-    } else {
+    if (!dndManager.result.sourceId || !dndManager.result.targetId) {
       dndManager?.changeResult({
         status: DragResultStatusEnum.CANCEL,
         hoverId: null,
         sourceId: null,
         targetId: null,
       });
+      return;
     }
     dndManager?.changeResult({
       hoverId: null,
@@ -38,7 +33,8 @@ export function draggableConnect(
     });
   };
 
-  if (!element || !sourceId || !React.isValidElement<any>(element)) return element;
+  if (!element || !draggable || !React.isValidElement<HTMLAttributes<Element>>(element))
+    return element;
 
   return cloneElement(element, {
     draggable: true,
