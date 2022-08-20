@@ -5,6 +5,7 @@ import ReactDOM from 'react-dom';
 import NodeListDemo from './node-list';
 import DialogDemo from './dialog';
 import DndDemo from './dnd';
+import 'antd/dist/antd.css';
 // import ScrollView from './../src/component/test/scrollView';
 function App() {
   return (

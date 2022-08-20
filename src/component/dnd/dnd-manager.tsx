@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { DndManagerContext } from './constant';
 import {
   DragResultStatusEnum,
-  IDndManager,
   IResult,
   source,
   sourceId,
@@ -11,11 +10,11 @@ import {
   targetId,
   targetMap,
 } from './type';
-import './index.less';
 import { dropMode } from './type';
+import { IDropEndResult } from '.';
 interface Props {
   children: React.ReactNode;
-  onDragEnd: (result: IResult) => void;
+  onDragEnd: (result: IDropEndResult) => void;
   dropMode?: dropMode;
 }
 interface State {
@@ -37,35 +36,41 @@ export default class DndManager extends Component<Props, State> {
       hoverId: null,
     },
   };
-  public changeResult(result: Partial<IResult>) {
+  public changeResult = (result: Partial<IResult>) => {
     const { onDragEnd } = this.props;
     const newResult = { ...this.state.result, ...result };
 
     if (result.status && result.status === DragResultStatusEnum.DROP) {
-      onDragEnd(newResult);
+      onDragEnd({
+        source: this.state.sourceMap[newResult.sourceId],
+        target: this.state.targetMap[newResult.targetId],
+        status: result.status,
+      });
     }
     this.setState({ ...this.state, result: newResult });
-  }
-  public addSource(sourceId: sourceId, source: source) {
+  };
+  public addSource = (sourceId: sourceId, source: source) => {
     this.setState((state) => {
       return { sourceMap: { ...state.sourceMap, [sourceId]: source } };
     });
-  }
-  public addTarget(targetId: targetId, target: target) {
+  };
+  public addTarget = (targetId: targetId, target: target) => {
     this.setState((state) => {
       return { targetMap: { ...state.targetMap, [targetId]: target } };
     });
-  }
-  public removeSource(sourceId: sourceId) {
+  };
+  public removeSource = (sourceId: sourceId) => {
+    if (!this.state.sourceMap[sourceId]) return;
     this.setState((state) => {
       return { sourceMap: { ...state.sourceMap, [sourceId]: undefined } };
     });
-  }
-  public removeTarget(targetId: targetId) {
+  };
+  public removeTarget = (targetId: targetId) => {
+    if (!this.state.sourceMap[targetId]) return;
     this.setState((state) => {
       return { targetMap: { ...state.targetMap, [targetId]: undefined } };
     });
-  }
+  };
 
   componentWillReceiveProps(nextProps: Props) {
     const { dropMode } = this.state;
@@ -85,11 +90,11 @@ export default class DndManager extends Component<Props, State> {
       <DndManagerContext.Provider
         value={{
           ...this.state,
-          addSource: this.addSource.bind(this),
-          addTarget: this.addTarget.bind(this),
-          removeSource: this.removeSource.bind(this),
-          removeTarget: this.removeTarget.bind(this),
-          changeResult: this.changeResult.bind(this),
+          addSource: this.addSource,
+          addTarget: this.addTarget,
+          removeSource: this.removeSource,
+          removeTarget: this.removeTarget,
+          changeResult: this.changeResult,
         }}
       >
         {children}

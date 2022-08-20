@@ -21,6 +21,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "antd": "^4.19.2",
     "webpack-bundle-analyzer": "^4.5.0"
   }
 }

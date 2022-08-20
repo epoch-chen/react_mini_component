@@ -1,47 +1,60 @@
-import React, { cloneElement } from 'react';
+import React, { cloneElement, useMemo } from 'react';
 import { DndManagerContext } from './constant';
 import { draggableConnect } from './draggable';
-import { dropabbleConnect } from './dropable';
+import { droppableConnect } from './droppable';
+import { getUUID } from './utils';
 
 export interface IDragDropProps {
   children: React.ReactElement | (({ isDragOver }: { isDragOver: boolean }) => React.ReactElement);
-  sourceId?: string;
-  targetId?: string;
+  droppable?: boolean;
+  draggable?: boolean;
+  resultData?: Record<string, string | number>;
 }
 
-const DndComponent = ({ children, sourceId, targetId }: IDragDropProps): React.ReactElement => {
-  const dndContainerRef = React.useRef<HTMLElement>();
+const DndComponent = ({
+  children,
+  droppable,
+  draggable,
+  resultData = {},
+}: IDragDropProps): React.ReactElement => {
+  const uuid = React.useRef<string>(getUUID());
   const dndManager = React.useContext(DndManagerContext);
+  const result = useMemo(() => resultData, []);
+  React.useEffect(() => {
+    dndManager.removeTarget(uuid.current);
+    if (droppable) {
+      dndManager.addTarget(uuid.current, result);
+    }
+  }, [droppable, result]);
 
   React.useEffect(() => {
-    if (targetId) {
-      dndManager.addTarget(targetId, dndContainerRef);
+    dndManager.removeSource(uuid.current);
+    if (draggable) {
+      dndManager.addSource(uuid.current, result);
     }
-    if (sourceId) {
-      dndManager.addSource(sourceId, dndContainerRef);
-    }
-  }, [children, sourceId, targetId]);
+  }, [draggable, result]);
 
   React.useEffect(() => {
     return () => {
-      if (sourceId) dndManager.removeSource(sourceId);
-      if (targetId) dndManager.removeTarget(targetId);
+      dndManager.removeSource(uuid.current);
+      dndManager.removeTarget(uuid.current);
     };
   }, []);
 
   return cloneElement(
-    dropabbleConnect(
+    droppableConnect(
       draggableConnect(
         typeof children === 'function'
-          ? children({ isDragOver: dndManager.result.hoverId === targetId })
+          ? children({ isDragOver: dndManager.result.hoverId === uuid.current })
           : children,
-        sourceId,
+        draggable,
+        uuid.current,
         dndManager
       ),
-      targetId,
+      droppable,
+      uuid.current,
       dndManager
-    ),
-    { ref: dndContainerRef }
+    )
   );
 };
 export default DndComponent;
