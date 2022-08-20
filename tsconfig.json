@@ -4,7 +4,7 @@
     "baseUrl": ".",
     "outDir": "lib",
     "sourceMap": false,
-    "noImplicitAny": true,
+    "noImplicitAny": false,
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "moduleResolution": "node",
